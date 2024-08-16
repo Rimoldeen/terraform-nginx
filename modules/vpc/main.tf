@@ -1,3 +1,7 @@
+// This module creates a Virtual Private Cloud (VPC) with public and private subnets.
+// The public subnets - Internet Gateway (IGW) 
+// The private subnets - NAT Gateway.
+
 data "aws_availability_zones" "available" {}
 
 resource "aws_vpc" "main" {
