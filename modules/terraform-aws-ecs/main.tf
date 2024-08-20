@@ -12,8 +12,8 @@ resource "aws_ecs_task_definition" "main" {
   family                   = "${var.project_name}-nginx"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = var.cpu
+  memory                   = var.memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   container_definitions    = var.container_definitions
 }
@@ -44,7 +44,7 @@ resource "aws_ecs_service" "main" {
   name            = "${var.project_name}-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.main.arn
-  desired_count   = 3
+  desired_count   = var.desired_count
   launch_type     = "FARGATE"
 
   network_configuration {

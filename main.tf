@@ -1,19 +1,19 @@
 resource "aws_cloudwatch_log_group" "ecs_task_log_group" {
-  name = "ecs-nginx-task-log-group"
+  name = "${var.project_name}-log-group"
 }
 
 data "aws_region" "current" {}
 
 module "vpc" {
   source       = "./modules/terraform-aws-vpc"
-  project_name = "ecs-nginx-task"
+  project_name = var.project_name
 }
 
 module "alb" {
   source         = "./modules/terraform-aws-alb"
   vpc_id         = module.vpc.vpc_id
   public_subnets = module.vpc.public_subnets
-  project_name   = "ecs-nginx-task"
+  project_name   = var.project_name
 }
 
 # Deploy From an ECR Image Example - Basic Vite JS App 
@@ -54,17 +54,17 @@ module "alb" {
 # }
 
 # Deploy From Docker Hub Image Example - Basic Nginx App
-
 module "ecs" {
   source           = "./modules/terraform-aws-ecs"
   vpc_id           = module.vpc.vpc_id
   private_subnets  = module.vpc.private_subnets
   target_group_arn = module.alb.target_group_arn
 
-  project_name = "ecs-nginx-task"
+  project_name = var.project_name
 
-
-  // Basic nginx image
+  cpu            = "256"
+  memory         = "512"
+  desired_count  = 3
   container_name = "nginx"
   container_definitions = jsonencode([
     {
@@ -82,7 +82,7 @@ module "ecs" {
           awslogs-create-group  = "true"
           awslogs-group         = aws_cloudwatch_log_group.ecs_task_log_group.name
           awslogs-region        = data.aws_region.current.name
-          awslogs-stream-prefix = "ecs-nginx-task"
+          awslogs-stream-prefix = var.project_name
         }
       }
     }
