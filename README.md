@@ -5,13 +5,16 @@
 - The solution should be hosted in a VPC with two private subnets and two public subnets behind a load balancer listening on HTTP port 80
 - The solution must be structured to use at least one Terraform module
 
-### What this Repo deploys
+----
+## Overview 
 
-- ECS - Fargate (3 Instances)
-- VPC - 2 Private Subnets / 2 Public Subnets
-  - IGW
-  - NAT GW
-- ALB
+This Terraform configuration sets up and deploys a containerised application using AWS ECS, ALB, and VPC. 
+The configuration also includes AWS CloudWatch for logging.
+
+- **VPC:** A custom VPC with public and private subnets.
+- **ALB:** An Application Load Balancer to route traffic to the ECS service.
+- **ECS:** An ECS service with Fargate tasks, configured to run an Nginx container.
+- **CloudWatch Logs:** Centralised logging for the ECS tasks.
 
 ## Providers
 
